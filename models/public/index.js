@@ -151,3 +151,28 @@ document.querySelector("#add-btn").onclick = function() {
 document.querySelector("#sub-btn").onclick = function() {
   sendTransaction(false);
 };
+
+
+//added code 
+
+
+//create indexdb
+const request = indexDB.open("budget", 1); 
+
+request.onupgradeneeded = function(event) {  
+  const db = event.target.result; 
+  db.createObjectStore("transaction", { autoIncrement: true});
+
+}; 
+
+request.onsuccess = function(event) { 
+  db = event.target.result 
+  if (navigator.onLine) { 
+    checkDatabase(); 
+  }
+}; 
+
+// listen for app coming back online
+window.addEventListener('online', checkDatabase);
+
+
