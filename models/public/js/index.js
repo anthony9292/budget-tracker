@@ -1,3 +1,5 @@
+const { response } = require("express");
+
 let transactions = [];
 let myChart;
 
@@ -137,6 +139,12 @@ function sendTransaction(isAdding) {
   .catch(err => {
     // fetch failed, so save in indexed db
     saveRecord(transaction);
+     if (isAdding) { 
+       alert('No Connection(offline).Deposit is saved');
+     }
+     else { 
+       alert('No Connection(offline).Expense is saved');
+     }
 
     // clear form
     nameEl.value = "";
@@ -151,28 +159,5 @@ document.querySelector("#add-btn").onclick = function() {
 document.querySelector("#sub-btn").onclick = function() {
   sendTransaction(false);
 };
-
-
-//added code 
-
-
-//create indexdb
-const request = indexDB.open("budget", 1); 
-
-request.onupgradeneeded = function(event) {  
-  const db = event.target.result; 
-  db.createObjectStore("transaction", { autoIncrement: true});
-
-}; 
-
-request.onsuccess = function(event) { 
-  db = event.target.result 
-  if (navigator.onLine) { 
-    checkDatabase(); 
-  }
-}; 
-
-// listen for app coming back online
-window.addEventListener('online', checkDatabase);
 
 
