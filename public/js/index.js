@@ -1,5 +1,3 @@
-const { response } = require("express");
-
 let transactions = [];
 let myChart;
 
