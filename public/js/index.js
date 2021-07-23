@@ -137,13 +137,6 @@ function sendTransaction(isAdding) {
   .catch(err => {
     // fetch failed, so save in indexed db
     saveRecord(transaction);
-     if (isAdding) { 
-       alert('No Connection(offline).Deposit is saved');
-     }
-     else { 
-       alert('No Connection(offline).Expense is saved');
-     }
-
     // clear form
     nameEl.value = "";
     amountEl.value = "";
