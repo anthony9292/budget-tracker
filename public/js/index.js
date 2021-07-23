@@ -5,6 +5,7 @@ fetch("/api/transaction")
   .then(response => {
     return response.json();
   })
+
   .then(data => {
     // save db data on global variable
     transactions = data;
@@ -13,7 +14,6 @@ fetch("/api/transaction")
     populateTable();
     populateChart();
   });
-
 function populateTotal() {
   // reduce transaction amounts to a single total value
   let total = transactions.reduce((total, t) => {
@@ -151,3 +151,5 @@ document.querySelector("#add-btn").onclick = function() {
 document.querySelector("#sub-btn").onclick = function() {
   sendTransaction(false);
 };
+
+
