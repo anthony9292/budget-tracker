@@ -71,7 +71,7 @@ self.addEventListener('activate', function (evt) {
             }
             //sever files from cache
    evt.respondWith(
-       caches.match(evt.request).then(functionfunction (response) { 
+       caches.match(evt.request).then(function (response) { 
            return response || fetch(evt.request);
        })
    );
