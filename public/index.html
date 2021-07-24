@@ -42,17 +42,17 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-  <script src="js/index.js"></script>
-  <script src="js/db.js"></script>
+  <script src="index.js"></script>
+  <script src="db.js"></script>
 </body>
 <script>
-  (function() { 
-    if ("serviceWorker.register" in navigator) { 
-      navigator.serviceWorker.register("./service-worker.js", {scope: '/'})
-      .then(() => console.log("Service Working has been successfully registered."))
-      .catch(error => console.log("Service Working registration has failed", error));
-    }
-   })();
+ if("serviceWorker" in navigator) {
+   window.addEventListener("load", () => { 
+     navigator.serviceWorker.register("service-worker.js").then(reg => { 
+       console.log("found service worker file", reg);
+     });
+   });
+ }
 </script>
 
 </html>
