@@ -1,32 +1,33 @@
-const cacheName = 'v1'
+const CACHE_NAME = 'static-cache-v2';
 const DATA_CACHE_NAME = "data-cache-v1";
 
 const FILES_TO_CACHE = [
-    '/',
-    'index.js',
-    'index.html',
-    'style.css',
-     'db.js'
+  "/",
+  "/index.html",
+  "/manifest.webmanifest",
+  "/db.js",
+  "index.js",
+  "styles.css",
+  "/icons/icon-192X192.png",
+  "icon/icon-512x512.png",
 ];
 
 //install
-self.addEventListener('install', function(e) { 
+self.addEventListener('install', function(evt) { 
     //pre cache budget data 
-    e.waitUntil( 
-        cache.open(DATA_CACHE_NAME).then((cache) => cache.add("/api/transaction"))
+    evt.waitUntil( 
+        caches.open(CHE_NAME).then((cache) => {
+            console.log("successfully pre-cached");
+        return cache.addAll(FILES_TO_CACHE);
+         })
     );
-
-    e.waitUntil(
-        caches.open(cacheName)
-        .then((cache) => cache.addAll(FILES_TO_CACHE))
-    );
-     //lets browser know to activate this sevice worker immediately once it has finished installing
-     self.skipwaiting();
+    //lets browser know to activate this sevice worker immediately once it has finished installing
+    self.skipwaiting();
         });
 
-self.addEventListener('activate', function(e) { 
+self.addEventListener('activate', function (evt) { 
     console.log('Service worker has been activated!!')
-    e.waitUntil( 
+    evt.waitUntil( 
         catches.keys()
         .then(keyList => { 
             return Promise.all(
@@ -44,37 +45,35 @@ self.addEventListener('activate', function(e) {
 
 
 
-//handel requests 
- self.addEventListener('fetch', function (e) { 
-     if(e.request.url.includes('api')) {
-     console.log('[Service Worker] Fetch (data)', e.request.url);
-
-
-     e.respondWith(
-         caches.open.(DATA_CACHE_NAME).then(catche=> { 
-             return fetch(e.request).then(res => { 
+//fetch
+ self.addEventListener('fetch', function (evt) { 
+     if(evt.request.url.includes("/api/")) {
+     console.log('[Service Worker] Fetch (data)', evt.request.url);
+     evt.respondWith(
+         caches.open(DATA_CACHE_NAME).then(cache=> { 
+             return fetch(evt.request).then(res => { 
                  if(res.status === 200) { 
-                     cache.put(e.request.url, res.clone());
+                     cache.put(evt.request.url, res.clone());
                  }
                     return res;
-                }).catch(err => { 
-                    console.log(err);
-                    return cache.match(e.request);
-                })
-             })
 
+                })
+                .catch(err => { 
+                    console.log(err);
+                    return cache.match(evt.request);
+                });
+             })
+               .catch((err) => console.log(err))
 
          );
          return;
 
             }
             //sever files from cache
-        e.respondWith(
-         caches.open(CACHE_NAME).then(cache => { 
-             return cache.match(e.request).then(res => { 
-                 return res || fetch(e.request);
-             })
-            })
-        );
-         });
-         
+   evt.respondWith(
+       caches.match(evt.request).then(functionfunction (response) { 
+           return response || fetch(evt.request);
+       })
+   );
+
+    });
