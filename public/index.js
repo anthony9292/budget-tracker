@@ -1,14 +1,7 @@
-if (serviceWorker in navigator) { 
-  window.addEventListener("load", () => { 
-    navigator.serviceWorker.register("service-worker.js").then(reg => { 
-      console.log("service worker file fond!", reg);
-    });
-  });
-}
-
-
 let transactions = [];
 let myChart;
+let dbVersion;
+
 
 fetch("/api/transaction")
   .then(response => {
@@ -131,7 +124,7 @@ function sendTransaction(isAdding) {
       "Content-Type": "application/json"
     }
   })
-  .then(response => response => { 
+  .then(response => { 
      return response.json();
   })
   .then(data => {
@@ -153,12 +146,26 @@ function sendTransaction(isAdding) {
   });
 }
 
+function saveRecord (transactions) {
+  console.log(transactions)
+  const request = indexedDB.open('budgetOffline', dbVersion || 1);
+  console.log(request)
+  request.onupgradeneeded =({ target }) => { 
+    const db = target.result 
+    const budgetObjectStore = db.createObjectStore('budgetOffline', {autoIncrement: true});
+  };
+
+  request.onsuccess =() => { 
+    const db = request.result; 
+    const transaction = db.transaction(['budgetOffline'], 'readwrite');
+    const budgetObjectStore = transaction.objectStore('budgetOffline');
+    budgetObjectStore.add(transactions);
+  };
+};
+
 document.querySelector("#add-btn").onclick = function() { 
   sendTransaction(true);
 };
-
-   
-
 
 document.querySelector("#sub-btn").onclick = function() {
   sendTransaction(false);
