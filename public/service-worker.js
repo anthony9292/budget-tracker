@@ -1,4 +1,4 @@
-const CACHE_NAME = 'static files';
+const CACHE_NAME = "static files";
 const DATA_CACHE_NAME = "data files"
 const FILES_TO_CACHE = [
      '/',
@@ -6,19 +6,24 @@ const FILES_TO_CACHE = [
     '/index.js',
     '/manifest.webmanifest',
     'styles.css',
+    '/icons/icon-192x192.png',
+    '/icons/icon-512x512.png',
   ];
 
 
 //install
-self.addEventListener('install', event => { 
+self.addEventListener("install", event => { 
     //pre cache budget data 
     event.waitUntil( 
-        caches.open(CACHE_NAME).then(cache => {
+        caches
+          .open(CACHE_NAME)
+          .then(cache => {
             console.log("successfully pre-cached");
-    cache.addAll(FILES_TO_CACHE);
+            cache.addAll(FILES_TO_CACHE);
          })
         .then(() => self.skipWaiting())
         .cache(err => console.log(err))
+    
         );
 });
     
