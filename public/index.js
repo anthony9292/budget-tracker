@@ -202,13 +202,14 @@ function saveRecord (transactions) {
   let transaction = db.transaction(['budgetOffline'], 'readwrite');
   let budgetStore = transaction.objectStore('budgetOffline');
   budgetStore.add(transactions); 
+
 };
 
 
-document.querySelector('#add-btn').onclick = function() {
+document.querySelector("#add-btn").onclick = function() {
    sendTransaction(true);
 };
 
-document.querySelector('#sub-bnt').onclick = function() {
+document.querySelector("#sub-btn").onclick = function() {
   sendTransaction(false);
 };
