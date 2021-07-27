@@ -1,17 +1,15 @@
+const CACHE_NAME = 'static files';
+const DATA_CACHE_NAME = "data files";
 const FILES_TO_CACHE = [
      '/',
     '/index.html',
-    '/manifest.webmanifest',
-    '/db.js',
     '/index.js',
+    '/manifest.webmanifest',
     'styles.css',
     '/icons/icon-192x192png',
     '/icons/icon-512x512.png',
   ];
-  
 
-const CACHE_NAME = 'static files';
-const DATA_CACHE_NAME = "data files";
 
 //install
 self.addEventListener('install', event => { 
@@ -27,10 +25,10 @@ self.addEventListener('install', event => {
 });
     
 
-self.addEventListener('activate', event => { 
-    console.log('Service worker has been activated!!')
+self.addEventListener("activate", event => { 
+    console.log('activated!!')
     event.waitUntil( 
-        catches.keys().then(keyList => { 
+        caches.keys().then(keyList => { 
             return Promise.all(
                 keyList.map(key => {
                     if (key !== CACHE_NAME) { 
@@ -60,7 +58,7 @@ self.addEventListener('activate', event => {
                      return response;
                 })
                 .catch(err => { 
-                    
+
                     return cache.match(evt.request); 
                 });
             })

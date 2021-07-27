@@ -9,13 +9,13 @@ fetch("/api/transaction")
   })
   .then(data => { 
     transactions = data;
-
+      // save db data on global variable
     populateTotal();
     populateTable();
     populateChart();
   });
 
-    // save db data on global variable
+  
    
   
   function populateTotal() {
