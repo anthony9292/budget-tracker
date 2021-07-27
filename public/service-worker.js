@@ -1,5 +1,5 @@
 const CACHE_NAME = 'static files';
-const DATA_CACHE_NAME = "data files";
+const DATA_CACHE_NAME = "data files"
 const FILES_TO_CACHE = [
      '/',
     '/index.html',
