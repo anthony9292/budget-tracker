@@ -1,23 +1,10 @@
 {
-    "name": "Budget Tracker application",
-    "short_name": "Budget app",
-    "description": "A app that allows the user to track there personal budget",
-    "start_url": ".",
-    "background_color": "#FFFFFF",
-     "them_color": "#FFFFFF",
-    "display": "standalone",
-    "icons": [
-      {
-        "src": "/icons/icons-192x192.png",
-        "type": "image/png",
-        "sizes": "192x192"
-      },
-      {
-        "src": "/icons/icons-512-512.png",
-        "type": "image/png",
-        "sizes": "512x512"
-      }
-    ]
-
+  
+   "name": "Progressive Budget",
+   "short_name": "Progressive Budget",
+   "theme_color": "#ffffff",
+   "background_color":"#ffffff",
+   "start_url": "/",
+   "display": "standalone"
 }
   

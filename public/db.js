@@ -1,13 +1,10 @@
-// holds db objects when connection is complete 
-
-let db; 
-
+let dB;
 //connects to IndexDB database 
-const request = indexedDB.open('budget_tracker', 1);
+const request = indexedDB.open("budgetDB", 1);
 
 request.onupgradeneeded = function(event) { 
     const db = event.target.result; 
-    db.createObjectStore('new_transaction', {autoIncrement: true});
+    db.createObjectStore("new_transaction", { autoIncrement: true });
 };
  
 request.onsuccess = function (event) { 
@@ -18,19 +15,20 @@ request.onsuccess = function (event) {
     }
 };
 
-request.onerror = function(event) { 
-    console.log(event.target.errorCode); 
+request.onerror = function (event) { 
+    console.log("Something is wrong" + event.target.errorCode); 
 };
 
 function saveRecord(record) { 
-    const transaction = db.transaction(['new_transaction'], 'readwrite'); 
-    const budgetObjectStore = transaction.objectStore('new_transaction');
+    const transaction = db.transaction(["new_transaction"], "readwrite"); 
+    const budgetObjectStore = transaction.objectStore("new_transaction");
+
     budgetObjectStore.add(record); 
 }
 
 function uploadTransaction() { 
-    const transaction = db.transaction(['new_transaction'], 'readwrite'); 
-    const budgetObjectStore = transaction.objectStore('new_transaction');
+    const transaction = db.transaction(["new_transaction"], "readwrite"); 
+    const budgetObjectStore = transaction.objectStore("new_transaction");
     const getAll = budgetObjectStore.getAll();
 
 getAll.onsuccess = function() { 
@@ -44,23 +42,21 @@ getAll.onsuccess = function() {
             }
         })
         .then(response => response.json())
-        .then(serverResponse => { 
-            if (serverResponse.message) { 
-                throw new Error(serverResponse); 
-            }
-
+        .then(() => { 
             const transaction = db.transaction(['new_transaction'], 'readwrite'); 
             const budgetObjectStore = transaction.objectStore('new_transaction');
             budgetObjectStore.clear();
-
             alert('All transactions have been saved and submitted');
-        })
-        .catch(err => { 
-            console.log(err);
+            
         });
     }
-}
-
 };
+}
+function deletePending() {
+    const transaction = db.transaction(["pending"], "readwrite");
+    const budgetObjectStore = transaction.objectStore("pending");
+    budgetObjectStore.clear();
+
+}
 
 window.addEventListener('online', uploadTransaction);
