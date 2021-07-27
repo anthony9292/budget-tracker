@@ -1,6 +1,59 @@
 let transactions = [];
 let myChart;
 let dbVersion;
+let db;
+
+const request = indexedDB.open('budgetOffline', dbVersion || 1);
+
+request.onupgradeneeded = (event) => {
+  
+  db =event.target.result;
+
+  if (db.objectStoreNames.length === 0) {
+    db.createObjectStore('budgetOffline', {autoIncrement: true});
+  }
+};
+
+request.onerror = (event) => {
+  console.log(event.target.errorCode);
+};
+
+const checkDataBase = () => { 
+  console.log('checking database')
+  let transaction = db.transaction(['budgetOffline'], 'readwrite');
+  let budgetStore = transaction.objectStore('budgetOffline');
+  const allTransactions = budgetStore.getAll();
+
+
+  allTransactions.onsuccess = () => {
+    if (allTransactions.result.length > 0) { 
+      fetch('api/transaction/bulk', {
+        method:'POST',
+        body: JSON.stringify(allTransactions.result),
+        headers: { 
+          Accept: 'application/json, text/plain, */*',
+          'Content-Type': 'application/json',
+        },
+
+      })
+      .then((response) => response.json())
+      .then((res) => {
+        if(res.length !== 0) { 
+          transaction = db.transaction(['budgetOffline'], 'readwrite'); 
+          store = transaction.objectStore('budgetOffline');
+          store.clear
+        }
+      })
+    }
+  }
+};
+
+request.onsuccess = (event) => {
+  db = event.target.result; 
+  if (navigator.onLine) { 
+    checkDataBase();
+  }
+}
 
 
 fetch("/api/transaction")
@@ -15,9 +68,7 @@ fetch("/api/transaction")
     populateChart();
   });
 
-  
-   
-  
+
   function populateTotal() {
     let total = transactions.reduce((total, t) => {
       return total + parseInt(t.value);
@@ -145,30 +196,19 @@ function sendTransaction(isAdding) {
     amountEl.value = "";
   });
 }
-
-function saveRecord (transactions) {
-  console.log(transactions)
-  const request = indexedDB.open('budgetOffline', dbVersion || 1);
-  console.log(request)
-  request.onupgradeneeded =({ target }) => { 
-    const db = target.result 
-    const budgetObjectStore = db.createObjectStore('budgetOffline', {autoIncrement: true});
-  };
-
-  request.onsuccess =() => { 
-    const db = request.result; 
-    const transaction = db.transaction(['budgetOffline'], 'readwrite');
-    const budgetObjectStore = transaction.objectStore('budgetOffline');
-    budgetObjectStore.add(transactions);
-  };
+ 
+function saveRecord (transactions) { 
+  
+  let transaction = db.transaction(['budgetOffline'], 'readwrite');
+  let budgetStore = transaction.objectStore('budgetOffline');
+  budgetStore.add(transactions); 
 };
 
-document.querySelector("#add-btn").onclick = function() { 
-  sendTransaction(true);
+
+document.querySelector('#add-btn').onclick = function() {
+   sendTransaction(true);
 };
 
-document.querySelector("#sub-btn").onclick = function() {
+document.querySelector('#sub-bnt').onclick = function() {
   sendTransaction(false);
-}
-
-
+};
