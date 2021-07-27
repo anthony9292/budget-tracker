@@ -30,7 +30,7 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => { 
     console.log('Service worker has been activated!!')
     event.waitUntil( 
-        catches.keys().then((keyList) => { 
+        catches.keys().then(keyList => { 
             return Promise.all(
                 keyList.map(key => {
                     if (key !== CACHE_NAME) { 
@@ -60,6 +60,7 @@ self.addEventListener('activate', event => {
                      return response;
                 })
                 .catch(err => { 
+                    
                     return cache.match(evt.request); 
                 });
             })
