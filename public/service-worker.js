@@ -43,7 +43,7 @@ self.addEventListener('activate', function (evt) {
 
 //fetch
  self.addEventListener('fetch', function (evt) { 
-     if(evt.request.url.includes("/api/")) {
+     if(evt.request.url.includes('/api/')) {
      evt.respondWith(
          caches.open(DATA_CACHE_NAME).then(cache => { 
              return fetch(evt.request)
@@ -65,10 +65,12 @@ self.addEventListener('activate', function (evt) {
 
             }
             //sever files from cache
-   evt.respondWith(
-       caches.match(evt.request).then(function (response) { 
-           return response || fetch(evt.request);
-       })
-   );
+   evt.respondWith( 
 
+    caches.open(CACHE_NAME).then(cache => {
+         return cache.match(evt.request).then(response => { 
+                return response || fetch(evt.request);
+         });
+        })
+   )
     });

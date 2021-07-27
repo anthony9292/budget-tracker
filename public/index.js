@@ -1,22 +1,35 @@
+if (serviceWorker in navigator) { 
+  window.addEventListener("load", () => { 
+    navigator.serviceWorker.register("service-worker.js").then(reg => { 
+      console.log("service worker file fond!", reg);
+    });
+  });
+}
+
+
 let transactions = [];
 let myChart;
 
 fetch("/api/transaction")
-  .then(response => response.json())
-   .then(data => {
-    // save db data on global variable
+  .then(response => {
+    return response.json();
+  })
+  .then(data => { 
     transactions = data;
 
     populateTotal();
     populateTable();
     populateChart();
   });
+
+    // save db data on global variable
+   
   
   function populateTotal() {
-    const total = transactions.reduce((total, t) => {
+    let total = transactions.reduce((total, t) => {
       return total + parseInt(t.value);
     }, 0);
-    
+
   let totalEl = document.querySelector("#total");
   totalEl.textContent = total;
 }
@@ -118,7 +131,9 @@ function sendTransaction(isAdding) {
       "Content-Type": "application/json"
     }
   })
-  .then(response => response.json())
+  .then(response => response => { 
+     return response.json();
+  })
   .then(data => {
     if (data.errors) {
       errorEl.textContent = "Missing Information";
@@ -138,15 +153,15 @@ function sendTransaction(isAdding) {
   });
 }
 
-document.querySelector("#add-btn").addEventListener("click", function(event) { 
-   event.preventDefault();
-   sendTransaction(true);
-});
+document.querySelector("#add-btn").onclick = function() { 
+  sendTransaction(true);
+};
+
+   
 
 
-document.querySelector("#sub-btn").addEventListener("click",function(event)  { 
-  event.preventDefault(); 
+document.querySelector("#sub-btn").onclick = function() {
   sendTransaction(false);
-});
+}
 
 
