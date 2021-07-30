@@ -2,11 +2,23 @@
   
    "name": "Offline/offline budget tracker",
    "short_name": "Budget Tracker",
+   "icons": [
+     {
+       "src": "icons/icon-192x192.png",
+       "sizes": "192x192",
+       "type" : "image/png"
+     },
+     {
+       "src": "icons/icon-512x512.png",
+       "sizes": "512x512",
+       "type": "image/png"
+     }
    
-
-   "them_color": "#ffffff" ,
+    ],
+  
+  "start_url": "/",
+  "disruptions": "budget application that allows user to follow budget plan",
    "background_color": "#ffffff",
-    "start_url":"/",
     "display": "standalone"
   }
   

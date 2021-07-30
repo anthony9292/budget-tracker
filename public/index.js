@@ -1,60 +1,11 @@
-let transactions = [];
-let myChart;
-let dbVersion;
-let db;
-
-const request = indexedDB.open('budgetOffline', dbVersion || 1);
-
-request.onupgradeneeded = (event) => {
-  
-  db =event.target.result;
-
-  if (db.objectStoreNames.length === 0) {
-    db.createObjectStore('budgetOffline', {autoIncrement: true});
-  }
-};
-
-request.onerror = (event) => {
-  console.log(event.target.errorCode);
-};
-
-const checkDataBase = () => { 
-  console.log('checking database')
-  let transaction = db.transaction(['budgetOffline'], 'readwrite');
-  let budgetStore = transaction.objectStore('budgetOffline');
-  const allTransactions = budgetStore.getAll();
-
-
-  allTransactions.onsuccess = () => {
-    if (allTransactions.result.length > 0) { 
-      fetch('api/transaction/bulk', {
-        method:'POST',
-        body: JSON.stringify(allTransactions.result),
-        headers: { 
-          Accept: 'application/json, text/plain, */*',
-          'Content-Type': 'application/json',
-        },
-
-      })
-      .then((response) => response.json())
-      .then((res) => {
-        if(res.length !== 0) { 
-          transaction = db.transaction(['budgetOffline'], 'readwrite'); 
-          store = transaction.objectStore('budgetOffline');
-          store.clear
-        }
-      })
-    }
-  }
-};
-
-request.onsuccess = (event) => {
-  db = event.target.result; 
-  if (navigator.onLine) { 
-    checkDataBase();
-  }
+if ("serviceWorker" in navigator) { 
+  navigator.serviceWorker
+  .register("service-worker.js")
+  .then(() => console.log("service worker is registered"));
 }
 
+let transactions = [];
+let myChart;
 
 fetch("/api/transaction")
   .then(response => {
@@ -196,15 +147,6 @@ function sendTransaction(isAdding) {
     amountEl.value = "";
   });
 }
- 
-function saveRecord (transactions) { 
-  
-  let transaction = db.transaction(['budgetOffline'], 'readwrite');
-  let budgetStore = transaction.objectStore('budgetOffline');
-  budgetStore.add(transactions); 
-
-};
-
 
 document.querySelector("#add-btn").onclick = function() {
    sendTransaction(true);
